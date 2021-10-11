@@ -7,21 +7,22 @@
     />
     <!-- /导航栏 -->
     <!-- 登录表单 -->
-    <van-cell-group ref="loginForm">
+     <van-form ref="loginForm">
       <!-- 手机号输入框 -->
       <van-field
-        v-model="user.moblie"
+        name='mobile'
+        v-model="user.mobile"
         left-icon="phone-o"
         label="手机号"
         placeholder="请输入手机号"
         required
-        clearable
-        :rules="userFormRules.moblie"
+        :rules="userFormRules.mobile"
       />
 
 
       <!-- 验证码输入框 -->
       <van-field
+        name='code'
         v-model="user.code"
         left-icon="passed"
         label="验证码"
@@ -30,10 +31,18 @@
         :rules="userFormRules.code"
       >
         <template #button>
+         <van-count-down
+            v-if="isCountDownShow"
+            slot="button"
+            :time="1000 * 60"
+            format="ss s"
+            @finish="isCountDownShow = false"
+          />
           <van-button 
           class="send-btn" 
           size="mini" 
           round
+          :loading="isSendSmsLoading"
           @click="onSendSms"
           >发送验证码</van-button>
         </template>
@@ -49,7 +58,7 @@
         @click="onLogin"
         >登录</van-button>
       </div>
-    </van-cell-group>
+    </van-form>
      <!-- /登录表单 -->
   </div>
 </template>
@@ -64,26 +73,28 @@ export default {
     return {
       // 表单数据
       user: {
-        moblie: '', // 手机号
-        code: '' // 验证码
+        mobile: '17090086870', // 手机号
+        code: '246810' // 验证码
       },
 
       // 表单验证规则
       userFormRules:{
         // 手机号验证规则
-        moblie:[
+        mobile:[
           { required: true, message: '手机号是必填项' },
-          {pattern: /^1[0-9]{10}$/, message: '手机号格式不正确'}
+          { pattern: /^1[0-9]{10}$/, message: '手机号格式不正确'}
           ],
           // 验证码验证规则
         code:[
           { required: true, message: '验证码是必填项' },
-          {pattern: /^\d{6}$/, message: '验证码格式不正确'}
+          { pattern: /^\d{6}$/, message: '验证码格式不正确'}
           ]
         },
 
         // 倒计时的显示隐藏
-        isCountDownShow: false
+        isCountDownShow: false,
+        // 按钮的loading状态
+        isSendSmsLoading: false
       } 
   },
   computed: {},
@@ -116,9 +127,16 @@ export default {
         // 2、登录成功提示用户
         //console.log('登录成功', res)
         this.$toast.success('登录成功')
-      } catch (err) {
-        // 登录失败，提示用户错在哪里
-        if (err.response.status === 400) {
+        // 3、把token存储到 Vuex容器中
+        
+        this.$store.commit('setUser', res.data.data)
+
+        // 4、使用路由跳转 layout组件页面
+
+        this.$router.push(this.$route.query.redirect || '/')
+      } catch (error) {
+        // 5、登录失败，提示用户错在哪里
+        if(error.response.status === 400){
           //console.log('登录失败', err)
           this.$toast.fail('登录失败,手机号或验证码错误')
         }else{
@@ -137,22 +155,25 @@ export default {
        * 4、验证失败，关闭倒计时，提示用户错在哪里
        */
       // 1、校验手机号
-      try {
-        await this.$refs.loginForm.validate('moblie')
+      try {   
+        await this.$refs.loginForm.validate('mobile') 
       } catch (err){
         return console.log('验证失败', err)
       }
+      
       // 2、验证通过，显示倒计时
       this.isCountDownShow = true
-
+      
       // 3、发送带参数的get请求获取验证码，注意参数是手机号
       try {
-         await sendSms(this,user.moblie)
+        this.isSendSmsLoading =true
+         await sendSms(this.user.mobile)
          this.$$toast('发送成功')
       } catch(err){
+         this.isSendSmsLoading = false
       // 4、发送失败，关闭倒计时，提示用户错在哪里
       this.isCountDownShow = false
-      if(error.response.status === 429){
+      if(err.response.status === 429){
         this.$toast('请求频繁，请稍后重试')
       } else {
         this.$toast('服务器异常，请联系客服')
@@ -169,8 +190,8 @@ export default {
  */
  .login-container{
    .send-btn{
-     width: 76px;
-     height: 23px;
+     width: 176px;
+     height: 53px;
      background-color: #ededed;
      .van-button__text{
        font-size: 11px;

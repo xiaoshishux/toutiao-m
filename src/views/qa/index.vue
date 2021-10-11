@@ -1,5 +1,5 @@
 <template>
-    <dir class="qa-container">问答页面</dir>
+    <div class="qa-container">问答页面</div>
 </template>
 
 <script>

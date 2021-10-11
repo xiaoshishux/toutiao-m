@@ -1,5 +1,5 @@
 <template>
-    <dir class="layout-container">
+    <div class="layout-container">
        <!-- 子路由出口 -->
     <router-view />
     <!-- /子路由出口 -->
@@ -12,7 +12,7 @@
       <van-tabbar-item icon="manager-o" to="/my">我的</van-tabbar-item>
     </van-tabbar>
     <!-- /底部导航栏 -->
-    </dir>
+    </div>
 </template>
 
 <script>

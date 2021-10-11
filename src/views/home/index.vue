@@ -1,5 +1,5 @@
 <template>
-    <dir class="home-container">首页</dir>
+    <div class="home-container">首页</div>
 </template>
 
 <script>

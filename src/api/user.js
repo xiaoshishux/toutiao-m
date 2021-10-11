@@ -18,7 +18,7 @@
  /**
   * 发送短信验证码
   */
- export const sendSms = moblie =>{
+ export const sendSms = mobile =>{
    return request({
      method:'get',
      url:`/app/v1_0/sms/codes/${mobile}`
