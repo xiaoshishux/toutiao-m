@@ -21,7 +21,9 @@ export default {
   components: {},
   props: {},
   data () {
-    return {}
+    return {
+      active:0
+    }
   },
   computed: {},
   watch: {},

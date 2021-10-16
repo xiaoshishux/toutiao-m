@@ -2,6 +2,7 @@
   <div class="login-container">
   <!-- 导航栏 -->
   <van-nav-bar
+    class="app-nav-bar"
       title="登录 / 注册"
       left-arrow
     />
@@ -73,7 +74,7 @@ export default {
     return {
       // 表单数据
       user: {
-        mobile: '17090086870', // 手机号
+        mobile: '13911111111', // 手机号
         code: '246810' // 验证码
       },
 
