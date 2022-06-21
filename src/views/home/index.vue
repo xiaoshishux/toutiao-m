@@ -20,7 +20,7 @@
         v-for="item in channels"
         :key="item.id"
         >
-        {{ item.name }}的内容
+        
         <!-- 频道的文章列表 -->
           <ArticleList :channel="item"></ArticleList>
         <!-- /频道的文章列表 -->
