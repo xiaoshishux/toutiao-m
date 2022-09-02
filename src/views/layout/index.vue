@@ -1,37 +1,34 @@
 <template>
-    <div class="layout-container">
-       <!-- 子路由出口 -->
+  <div class="layout-container">
+    <!-- 子路由出口 -->
     <router-view />
     <!-- /子路由出口 -->
 
     <!-- 底部导航栏 -->
     <van-tabbar v-model="active" route>
       <van-tabbar-item icon="home-o" to="/">首页</van-tabbar-item>
-      <van-tabbar-item icon="comment-o" to="/qa">问答</van-tabbar-item>
-      <van-tabbar-item icon="video-o" to="/video">视频</van-tabbar-item>
       <van-tabbar-item icon="manager-o" to="/my">我的</van-tabbar-item>
     </van-tabbar>
     <!-- /底部导航栏 -->
-    </div>
+  </div>
 </template>
 
 <script>
 export default {
-  name: 'LayoutIndex',
+  name: "LayoutIndex",
   components: {},
   props: {},
-  data () {
+  data() {
     return {
-      active:0
-    }
+      active: 0
+    };
   },
   computed: {},
   watch: {},
-  created () {},
-  mounted () {},
+  created() {},
+  mounted() {},
   methods: {}
-}
+};
 </script>
 
-<style scoped lang="less">
-</style>
+<style scoped lang="less"></style>

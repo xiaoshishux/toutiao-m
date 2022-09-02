@@ -42,7 +42,7 @@
 
 <script>
 export default {
-  name: 'ArticleItem',
+  name: "ArticleItem",
 
   components: {},
 
@@ -53,20 +53,20 @@ export default {
     }
   },
 
-  data () {
-    return {}
+  data() {
+    return {};
   },
 
   computed: {},
 
   watch: {},
 
-  created () {},
+  created() {},
 
-  mounted () {},
+  mounted() {},
 
   methods: {}
-}
+};
 </script>
 
 <style scoped lang="less">
