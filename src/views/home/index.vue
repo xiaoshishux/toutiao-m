@@ -35,7 +35,13 @@
       close-icon-position="top-left"
       get-container="body"
     >
-      <ChannelEdit :user-channels="channels"></ChannelEdit>
+      <!-- 模板中的 $event 表示事件参数 -->
+      <ChannelEdit
+        :user-channels="channels"
+        :active="active"
+        @update-active="active = $event"
+        @close="show = false"
+      ></ChannelEdit>
     </van-popup>
   </div>
 </template>
@@ -106,6 +112,9 @@ export default {
         this.$toast("数据获取失败");
       }
     }
+    // onUpdateActive(index) {
+    //   this.active = index;
+    // }
   }
 };
 </script>
