@@ -89,23 +89,23 @@ export default {
       try {
         let channelse = [];
         if (this.user) {
-          // 已登录，请求获取线上的频道数据
+          // 已登录，请求获取线上的频道列表数据
           const { data } = await getUserChannels();
           //console.log(data)
           channelse = data.data.channels;
         } else {
-          //未登录
-          const loadChannels = getItem("TOUTIAO__CHANNELS");
+          //未登录，判断是否有本地存储的频道列表数据
+          const loadChannels = getItem("user-channels");
           if (loadChannels) {
             // 有本地频道数据，则使用
             channelse = loadChannels;
           } else {
-            // 没有本地频道数据，则请求获取默认推荐的频道列表
+            // 用户没有登录，没有本地频道数据，则请求获取默认推荐的频道列表
             const { data } = await getUserChannels();
             channelse = data.data.channels;
           }
         }
-        // 将数据更新到组件中
+        // 把处理好的数据放到 data 中以供模板使用
         this.channels = channelse;
       } catch (err) {
         console.log(err);

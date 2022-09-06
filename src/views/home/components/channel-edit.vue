@@ -22,7 +22,7 @@
         v-for="(channels, index) in userChannels"
         :key="index"
         :text="channels.name"
-        @click="onUserChannelClick(index)"
+        @click="onUserChannelClick(channels, index)"
       />
     </van-grid>
 
@@ -44,8 +44,13 @@
 </template>
 
 <script>
-import { getAllChannels } from "@/api/channel";
-
+import {
+  getAllChannels,
+  addUserChannels,
+  deleteUserChannels
+} from "@/api/channel";
+import { mapState } from "vuex";
+import { setItem } from "@/utils/storage";
 export default {
   name: "ChannelEdit",
   components: {},
@@ -66,10 +71,11 @@ export default {
     };
   },
   computed: {
+    ...mapState(["user"]),
     // 推荐的频道列表
     recommendChannels() {
       // 所有频道 - 我的频道 = 剩下的推荐频道
-      // filter 方法：过滤数据，根据方法返回的布尔值   ture 来手机数据
+      // filter 方法：过滤数据，根据方法返回的布尔值   ture 来收集数据
 
       return this.AllChannels.filter(channel => {
         // find 方法查找满足条件的单个元素
@@ -92,20 +98,31 @@ export default {
       console.log(data);
       this.AllChannels = data.data.channels;
     },
-    onAdd(channels) {
+    async onAdd(channels) {
       this.userChannels.push(channels);
+
+      // 数据持久化
+      if (this.user) {
+        // 登录了,数据储存到线上
+        await addUserChannels({
+          channels: [{ id: channels.id, seq: this.userChannels.length }]
+        });
+      } else {
+        // 未登录，数据储存到本地
+        setItem("user-channels", this.userChannels);
+      }
     },
-    onUserChannelClick(index) {
+    onUserChannelClick(channels, index) {
       if (this.isEdit && index !== 0) {
         // 编辑状态，删除频道
-        this.deleteChannel(index);
+        this.deleteChannel(channels, index);
       } else {
         // 非编辑状态，切换频道
         this.switchChannel(index);
       }
     },
 
-    deleteChannel(index) {
+    async deleteChannel(channels, index) {
       // 如果删除的是当前激活频道之前的频道
       if (index <= this.active) {
         // 更新激活频道的索引
@@ -114,6 +131,13 @@ export default {
       this.userChannels.splice(index, 1);
 
       // 数据持久化
+      if (this.user) {
+        // 登录了，持久化到线上
+        await deleteUserChannels(channels.id);
+      } else {
+        // 未登录，持久化到本地
+        setItem("user-channels", this.userChannels);
+      }
     },
 
     switchChannel(index) {
