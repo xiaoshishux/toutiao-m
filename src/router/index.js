@@ -9,10 +9,10 @@ const routes = [
     name: 'login',
     component: () => import('@/views/login/')
   },
-  {
+  { // 一级路由渲染到根组件中的router-view
     path: '/',
     component: () => import('@/views/layout/'),
-    children: [
+    children: [  // 子路由渲染到父路由的 router-view中
       {
         path: '', // 默认子路由
         name: 'home',
@@ -24,7 +24,12 @@ const routes = [
         component: () => import('@/views/my/')
       }
     ]
-  }
+  },
+  {
+    path: '/search',
+    name: 'search',
+    component: () => import('@/views/search/')
+  },
 ]
 
 const router = new VueRouter({
