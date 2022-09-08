@@ -4,7 +4,7 @@
       <van-search
         v-model="searchText"
         show-action
-        @search="onSearch"
+        @search="onSearch(searchText)"
         @cancel="$router.back()"
         placeholder="请输入搜索关键词"
         @focus="isResultShow = false"
@@ -12,15 +12,19 @@
     </form>
 
     <!-- 搜索结果 -->
-    <search-results v-if="isResultShow" />
+    <search-results :search-text="searchText" v-if="isResultShow" />
     <!-- /搜索结果 -->
 
     <!-- 联想建议 -->
-    <search-suggestion v-else-if="searchText" :search-text="searchText" />
+    <search-suggestion
+      v-else-if="searchText"
+      :search-text="searchText"
+      @search="onSearch"
+    />
     <!-- /联想建议 -->
 
     <!-- 搜索历史 -->
-    <search-history v-else />
+    <search-history v-else :search-histories="SearchHistories" />
     <!-- /搜索历史 -->
   </div>
 </template>
@@ -40,7 +44,8 @@ export default {
   data() {
     return {
       searchText: "", //搜索框的内容
-      isResultShow: false //控制搜索结果显示状态
+      isResultShow: false, //控制搜索结果显示状态
+      SearchHistories: [] // 搜索历史数据
     };
   },
   computed: {},
@@ -48,7 +53,17 @@ export default {
   created() {},
   mounted() {},
   methods: {
-    onSearch() {
+    onSearch(searchText) {
+      // 把输入框设置为你要搜索的文本
+      this.searchText = searchText;
+      const index = this.SearchHistories.indexOf(searchText);
+      if (index !== -1) {
+        // 去除重复项
+        this.SearchHistories.splice(index, 1);
+      }
+      //记录搜索历史记录放到顶部
+      this.SearchHistories.unshift(searchText);
+      //展示搜索结果
       this.isResultShow = true;
     }
   }

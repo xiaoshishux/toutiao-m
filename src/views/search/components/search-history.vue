@@ -7,13 +7,11 @@
         <span>完成</span>
       </div>
     </van-cell>
-    <van-cell title="1233">
-      <van-icon name="close" />
-    </van-cell>
-    <van-cell title="5555">
-      <van-icon name="close" />
-    </van-cell>
-    <van-cell title="6666">
+    <van-cell
+      :title="history"
+      v-for="(history, index) in SearchHistories"
+      :key="index"
+    >
       <van-icon name="close" />
     </van-cell>
   </div>
@@ -23,7 +21,12 @@
 export default {
   name: "SearchHistory",
   components: {},
-  props: {},
+  props: {
+    SearchHistories: {
+      type: Array,
+      required: true
+    }
+  },
   data() {
     return {};
   },
