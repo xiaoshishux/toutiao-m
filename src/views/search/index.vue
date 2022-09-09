@@ -24,7 +24,12 @@
     <!-- /联想建议 -->
 
     <!-- 搜索历史 -->
-    <search-history v-else :search-histories="SearchHistories" />
+    <search-history
+      v-else
+      :search-histories="SearchHistories"
+      @search="onSearch"
+      @update-histories="searchHistories = $event"
+    />
     <!-- /搜索历史 -->
   </div>
 </template>
@@ -33,6 +38,8 @@
 import SearchSuggestion from "./components/search-suggestion.vue";
 import SearchHistory from "./components/search-history.vue";
 import SearchResults from "./components/search-results.vue";
+import { setItem, getItem } from "@/utils/storage";
+
 export default {
   name: "SearchPage",
   components: {
@@ -45,12 +52,19 @@ export default {
     return {
       searchText: "", //搜索框的内容
       isResultShow: false, //控制搜索结果显示状态
-      SearchHistories: [] // 搜索历史数据
+      SearchHistories: getItem("search-histories") || [] // 搜索历史数据
     };
   },
   computed: {},
-  watch: {},
-  created() {},
+  watch: {
+    // 监听搜索历史记录的变化，储存到本地存储
+    searchHistories() {
+      setItem("search-histories", this.SearchHistories);
+    }
+  },
+  created() {
+    this.loadSearchHistories;
+  },
   mounted() {},
   methods: {
     onSearch(searchText) {
@@ -63,8 +77,15 @@ export default {
       }
       //记录搜索历史记录放到顶部
       this.SearchHistories.unshift(searchText);
+
+      // 如果没有登录项，则把搜索历史记录储存到本地
+      setItem("search-histories", this.SearchHistories);
       //展示搜索结果
       this.isResultShow = true;
+    },
+    async loadSearchHistories() {
+      const searchHistories = getItem("search-histories") || [];
+      this.searchHistories = searchHistories;
     }
   }
 };
